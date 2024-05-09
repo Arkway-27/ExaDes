@@ -8,26 +8,60 @@ const SimulationInput = () => {
     width: "",
     height: "",
   });
+  const [index, setIndex] = useState(0);
   const [wallLocations, setWallLocations] = useState([]);
   const [applianceTypes, setApplianceTypes] = useState([]);
   const [placementRules, setPlacementRules] = useState("");
   const [renderData, setRenderData] = useState(null);
+  const electricalComponentCosts = {
+    fan: 2000,
+    tubelight: 600,
+    bulb: 300,
+    switchboard: 450,
+  };
+  const wiringCostPerMeter = 15;
+
+  const calculatePerimeterAndWiringCost = () => {
+    const { length, width } = roomDimensions;
+    const perimeter = 2 * (parseFloat(length) + parseFloat(width));
+    const wiringCost = perimeter * wiringCostPerMeter || 0;
+    return { perimeter, wiringCost };
+  };
+
+  const calculateElectricalComponentsCost = () => {
+    let totalCost = 0;
+    applianceTypes.forEach((type) => {
+      totalCost += electricalComponentCosts[type] || 0;
+    });
+    return totalCost;
+  };
+
+  const { perimeter, wiringCost } = calculatePerimeterAndWiringCost();
+  let electricalComponentsCost = calculateElectricalComponentsCost();
+
+  if (applianceTypes.includes("wiring")) {
+    electricalComponentsCost += wiringCost;
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const inputData = {
       roomDimensions,
-      wallLocations,
+      walls: wallLocations,
       applianceTypes,
       placementRules,
     };
 
-    try {
-      const response = await axios.get("http://192.168.27.150:2000/", {
-        responseType: "arraybuffer",
-      });
-      setRenderData(response.data);
+     try {
+    //    const response = await axios.post("http://172.16.5.133:5000/createJob", inputData, {
+    //      headers: {
+    //        "Content-Type": "application/json",
+    //       },
+    //      responseType: "arraybuffer",
+    //    });
+      const response = await axios.get("http://172.16.3.71:2000/")
+       setRenderData(response.data);
       console.log(response);
     } catch (error) {
       console.error("Error:", error);
@@ -35,12 +69,18 @@ const SimulationInput = () => {
   };
 
   const addWallLocation = () => {
-    setWallLocations([...wallLocations, { x: "", y: "", z: "" }]);
+    if (wallLocations.length < 4) {
+      setWallLocations([...wallLocations, { length: "", direction: "", index}]);
+      setIndex(index=>index+1)
+
+    } else {
+      alert("Maximum of 4 wall locations allowed.");
+    }
   };
 
-  const updateWallLocation = (index, coordinate, value) => {
+  const updateWallLocation = (index, field, value) => {
     const updatedWallLocations = [...wallLocations];
-    updatedWallLocations[index][coordinate] = value;
+    updatedWallLocations[index][field] = value;
     setWallLocations(updatedWallLocations);
   };
 
@@ -58,6 +98,7 @@ const SimulationInput = () => {
           <input
             type="number"
             id="length"
+            name="length"
             className="w-full rounded-md px-3 py-2 border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-500"
             value={roomDimensions.length}
             onChange={(e) =>
@@ -72,6 +113,7 @@ const SimulationInput = () => {
           <input
             type="number"
             id="width"
+            name="width"
             className="w-full rounded-md px-3 py-2 border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-500"
             value={roomDimensions.width}
             onChange={(e) =>
@@ -86,6 +128,7 @@ const SimulationInput = () => {
           <input
             type="number"
             id="height"
+            name="height"
             className="w-full rounded-md px-3 py-2 border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-500"
             value={roomDimensions.height}
             onChange={(e) =>
@@ -110,37 +153,33 @@ const SimulationInput = () => {
             >
               <label className="text-gray-700 mb-1">Wall [{index}]</label>
               <div className="flex items-center mb-1">
-                <span className="w-1/3 text-right mr-2">X:</span>
+                <span className="w-1/3 text-right mr-2">Length</span>
                 <input
                   type="number"
+                  name={`wallLength_${index}`}
                   className="w-full rounded-md px-3 py-2 border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                  value={wallLocation.x}
+                  value={wallLocation.length}
                   onChange={(e) =>
-                    updateWallLocation(index, "x", e.target.value)
+                    updateWallLocation(index, "length", e.target.value)
                   }
                 />
               </div>
               <div className="flex items-center mb-1">
-                <span className="w-1/3 text-right mr-2">Y:</span>
-                <input
-                  type="number"
+                <span className="w-1/3 text-right mr-2">Direction:</span>
+                <select
+                  name={`wallDirection_${index}`}
                   className="w-full rounded-md px-3 py-2 border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                  value={wallLocation.y}
+                  value={wallLocation.direction}
                   onChange={(e) =>
-                    updateWallLocation(index, "y", e.target.value)
+                    updateWallLocation(index, "direction", e.target.value)
                   }
-                />
-              </div>
-              <div className="flex items-center">
-                <span className="w-1/3 text-right mr-2">Z:</span>
-                <input
-                  type="number"
-                  className="w-full rounded-md px-3 py-2 border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                  value={wallLocation.z}
-                  onChange={(e) =>
-                    updateWallLocation(index, "z", e.target.value)
-                  }
-                />
+                >
+                  <option value="">Select direction</option>
+                  <option value="north">North</option>
+                  <option value="south">South</option>
+                  <option value="east">East</option>
+                  <option value="west">West</option>
+                </select>
               </div>
             </div>
           ))}
@@ -151,6 +190,7 @@ const SimulationInput = () => {
             <input
               type="checkbox"
               id="switchboard"
+              name="switchboard"
               className="mr-2 accent-blue-500 focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
               value="switchboard"
               checked={applianceTypes.includes("switchboard")}
@@ -167,6 +207,7 @@ const SimulationInput = () => {
             <input
               type="checkbox"
               id="fan"
+              name="fan"
               className="mr-2 accent-blue-500 focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
               value="fan"
               checked={applianceTypes.includes("fan")}
@@ -179,15 +220,59 @@ const SimulationInput = () => {
             />
             Fan
           </label>
+          <label htmlFor="wiring" className="mr-4">
+            <input
+              type="checkbox"
+              id="wiring"
+              name="wiring"
+              className="mr-2 accent-blue-500 focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              value="wiring"
+              checked={applianceTypes.includes("wiring")}
+              onChange={(e) => {
+                const newApplianceTypes = e.target.checked
+                  ? [...applianceTypes, "wiring"]
+                  : applianceTypes.filter((type) => type !== "wiring");
+                setApplianceTypes(newApplianceTypes);
+              }}
+            />
+            Wiring
+          </label>
         </div>
 
         <h2 className="text-xl font-bold mb-4">Placement Rules</h2>
         <textarea
+          name="placementRules"
           className="w-full rounded-md px-3 py-2 border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-500"
           value={placementRules}
           onChange={(e) => setPlacementRules(e.target.value)}
           placeholder="Enter placement rules or constraints"
         ></textarea>
+
+        <h2 className="text-xl font-bold mb-4">Cost Estimation</h2>
+        <table className="w-full mb-4">
+          <thead>
+            <tr>
+              <th className="py-2 px-4 bg-gray-100 border">Component</th>
+              <th className="py-2 px-4 bg-gray-100 border">Cost</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td className="py-2 px-4 border">Wiring Cost</td>
+              <td className="py-2 px-4 border">{wiringCost}</td>
+            </tr>
+            <tr>
+              <td className="py-2 px-4 border">Electrical Components Cost</td>
+              <td className="py-2 px-4 border">{electricalComponentsCost}</td>
+            </tr>
+            <tr>
+              <td className="py-2 px-4 border font-bold">Total Cost</td>
+              <td className="py-2 px-4 border font-bold">
+                {electricalComponentsCost + wiringCost}
+              </td>
+            </tr>
+          </tbody>
+        </table>
 
         <button
           type="submit"
