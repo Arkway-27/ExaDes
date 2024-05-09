@@ -2,3 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
+canvas{
+    height: 100vh !important;
+}
