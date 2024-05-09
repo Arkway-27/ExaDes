@@ -1,12 +1,16 @@
 import React, { useState } from "react";
-import axios from 'axios';
-import BlenderScene from './BlenderScene';
+import axios from "axios";
+import BlenderScene from "./BlenderScene";
 
 const SimulationInput = () => {
-  const [roomDimensions, setRoomDimensions] = useState({ length: '', width: '', height: '' });
+  const [roomDimensions, setRoomDimensions] = useState({
+    length: "",
+    width: "",
+    height: "",
+  });
   const [wallLocations, setWallLocations] = useState([]);
   const [applianceTypes, setApplianceTypes] = useState([]);
-  const [placementRules, setPlacementRules] = useState('');
+  const [placementRules, setPlacementRules] = useState("");
   const [renderData, setRenderData] = useState(null);
 
   const handleSubmit = async (e) => {
@@ -20,16 +24,16 @@ const SimulationInput = () => {
     };
 
     try {
-      const response = await axios.post('http://192.168.27.150:5000/', inputData);
+      const response = await axios.get("http://192.168.27.150:2000/");
       setRenderData(response.data);
-      console.log(response)
+      console.log(response);
     } catch (error) {
-      console.error('Error:', error);
+      console.error("Error:", error);
     }
   };
 
   const addWallLocation = () => {
-    setWallLocations([...wallLocations, { x: '', y: '', z: '' }]);
+    setWallLocations([...wallLocations, { x: "", y: "", z: "" }]);
   };
 
   const updateWallLocation = (index, coordinate, value) => {
@@ -47,7 +51,9 @@ const SimulationInput = () => {
           <input
             type="number"
             value={roomDimensions.length}
-            onChange={(e) => setRoomDimensions({ ...roomDimensions, length: e.target.value })}
+            onChange={(e) =>
+              setRoomDimensions({ ...roomDimensions, length: e.target.value })
+            }
           />
         </label>
         <label>
@@ -55,7 +61,9 @@ const SimulationInput = () => {
           <input
             type="number"
             value={roomDimensions.width}
-            onChange={(e) => setRoomDimensions({ ...roomDimensions, width: e.target.value })}
+            onChange={(e) =>
+              setRoomDimensions({ ...roomDimensions, width: e.target.value })
+            }
           />
         </label>
         <label>
@@ -63,7 +71,9 @@ const SimulationInput = () => {
           <input
             type="number"
             value={roomDimensions.height}
-            onChange={(e) => setRoomDimensions({ ...roomDimensions, height: e.target.value })}
+            onChange={(e) =>
+              setRoomDimensions({ ...roomDimensions, height: e.target.value })
+            }
           />
         </label>
 
@@ -78,7 +88,7 @@ const SimulationInput = () => {
               <input
                 type="number"
                 value={wallLocation.x}
-                onChange={(e) => updateWallLocation(index, 'x', e.target.value)}
+                onChange={(e) => updateWallLocation(index, "x", e.target.value)}
               />
             </label>
             <label>
@@ -86,7 +96,7 @@ const SimulationInput = () => {
               <input
                 type="number"
                 value={wallLocation.y}
-                onChange={(e) => updateWallLocation(index, 'y', e.target.value)}
+                onChange={(e) => updateWallLocation(index, "y", e.target.value)}
               />
             </label>
             <label>
@@ -94,7 +104,7 @@ const SimulationInput = () => {
               <input
                 type="number"
                 value={wallLocation.z}
-                onChange={(e) => updateWallLocation(index, 'z', e.target.value)}
+                onChange={(e) => updateWallLocation(index, "z", e.target.value)}
               />
             </label>
           </div>
@@ -106,11 +116,11 @@ const SimulationInput = () => {
             <input
               type="checkbox"
               value="switchboard"
-              checked={applianceTypes.includes('switchboard')}
+              checked={applianceTypes.includes("switchboard")}
               onChange={(e) => {
                 const newApplianceTypes = e.target.checked
-                  ? [...applianceTypes, 'switchboard']
-                  : applianceTypes.filter((type) => type !== 'switchboard');
+                  ? [...applianceTypes, "switchboard"]
+                  : applianceTypes.filter((type) => type !== "switchboard");
                 setApplianceTypes(newApplianceTypes);
               }}
             />
@@ -120,11 +130,11 @@ const SimulationInput = () => {
             <input
               type="checkbox"
               value="fan"
-              checked={applianceTypes.includes('fan')}
+              checked={applianceTypes.includes("fan")}
               onChange={(e) => {
                 const newApplianceTypes = e.target.checked
-                  ? [...applianceTypes, 'fan']
-                  : applianceTypes.filter((type) => type !== 'fan');
+                  ? [...applianceTypes, "fan"]
+                  : applianceTypes.filter((type) => type !== "fan");
                 setApplianceTypes(newApplianceTypes);
               }}
             />
@@ -147,4 +157,5 @@ const SimulationInput = () => {
   );
 };
 
-export default SimulationInput
+export default SimulationInput;
+
