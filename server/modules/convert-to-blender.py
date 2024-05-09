@@ -2,7 +2,7 @@ import bpy, os, math
 from os import listdir
 from os.path import isfile, join
 
-def renderRoom(Room)
+def renderRoom(room)
     model_path = os.path.join(os.getcwd(), "server/static")
     models = [f for f in listdir(model_path) if (isfile(join(model_path, f)) and f != 'output.gltf')]
 
@@ -13,20 +13,17 @@ def renderRoom(Room)
     cube.select_set(True)
     bpy.ops.object.delete()
 
-    rooms = Room("Room", "A room", (10, 10, 10))
-
-
     # bpy.ops.object.mode_set(mode='OBJECT')
     # bpy.ops.object.select_all(action='DESELECT')
 
     verts = []
-    for wall in rooms.walls:
+    for wall in room.walls:
         roomLength = wall.length / 2
         verts.append((roomLength, -roomLength, 0.0))
 
     door = bpy.data.objects['Door']
     window = bpy.data.objects['Window']
-    for wall in rooms.walls:
+    for wall in room.walls:
         roomLength = wall.length / 2
         roomHeight = wall.height
         switch wall.facing:
@@ -42,14 +39,17 @@ def renderRoom(Room)
             case "west":
                 a = 1
                 break
-        if wall.openings has "door":
-            door.rotation_mode = 'XYZ'
-            door.location = (roomLength, 0, 0)
-            door.rotation_euler.rotate_axis('Z', math.radians(90*a))
-        if wall.openings has "window":
-            window.rotation_mode = 'XYZ'
-            window.location = (roomLength, 0, roomHeight / 2)
-            window.rotation_euler.rotate_axis('Z', math.radians(90*a))
+
+        for opening in wall.openings:
+            if opening.name == "door":
+                door.rotation_mode = 'XYZ'
+                door.location = (roomLength, 0, 0)
+                door.rotation_euler.rotate_axis('Z', math.radians(90*a))
+            if opening.name == "window":
+                window.rotation_mode = 'XYZ'
+                window.location = (roomLength, 0, roomHeight / 2)
+                window.rotation_euler.rotate_axis('Z', math.radians(90*a))
+
         verts.append((roomLength, -roomLength, roomHeight))
 
     mesh = bpy.data.meshes.new('Room_Mesh')
