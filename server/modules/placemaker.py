@@ -1,25 +1,72 @@
 from room import Room
 
-dimensions = (5, 4, 3)
+width = 4
+length = 5
+height = 3
+
 walls = [
     {
         "index": 0,
         "facing": "north",
-        "coordinates": [0, 0, 10],
-        "openings": [{"name": "door", "coordinates": [4, 0, 2]}],
+        "length": "5",
     },
-    {"index": 1, "facing": "east", "coordinates": [10, 0, 6], "openings": []},
-    {"index": 2, "facing": "south", "coordinates": [10, 6, 0], "openings": []},
+    {
+        "index": 1,
+        "facing": "east",
+        "length": "4",
+    },
+    {
+        "index": 2,
+        "facing": "south",
+        "length": "5",
+    },
     {
         "index": 3,
         "facing": "west",
-        "coordinates": [0, 6, 0],
-        "openings": [{"name": "window", "coordinates": [0, 2, 3]}],
+        "length": "4",
     },
 ]
-room = Room("Bedroom", "A cozy bedroom", dimensions)
+
+directions = {
+    "north": "y",
+    "east": "x",
+    "south": "-y",
+    "west": "-x",
+}
+
+room = Room("Bedroom", "A cozy bedroom", (width, length, height))
 for wall in walls:
     room.createWall(wall["index"], wall["facing"], wall["coordinates"])
 
-for wall in room.walls:
-    print(wall)
+
+def setWallCoordinates(room, wall):
+    if wall.facing == "north":
+        wall.coordinates[0] = 0
+        wall.coordinates[1] = room.dimensions[0] / 2
+    elif wall.facing == "east":
+        wall.coordinates[0] = room.dimensions[1] / 2
+        wall.coordinates[1] = 0
+    elif wall.facing == "south":
+        wall.coordinates[0] = 0
+        wall.coordinates[1] = -room.dimensions[0] / 2
+    elif wall.facing == "west":
+        wall.coordinates[0] = -room.dimensions[1] / 2
+        wall.coordinates[1] = 0
+
+
+def setOpeningCoordinates( wall, opening):
+    if wall.facing == "north":
+        opening.coordinates[0] = wall.coordinates[0]
+        opening.coordinates[1] = wall.coordinates[1] + wall.length / 2
+    elif wall.facing == "east":
+        opening.coordinates[0] = wall.coordinates[0] + wall.length / 2
+        opening.coordinates[1] = wall.coordinates[1]
+    elif wall.facing == "south":
+        opening.coordinates[0] = wall.coordinates[0]
+        opening.coordinates[1] = wall.coordinates[1] - wall.length / 2
+    elif wall.facing == "west":
+        opening.coordinates[0] = wall.coordinates[0] - wall.length / 2
+        opening.coordinates[1] = wall.coordinates[1]
+
+
+print(room)

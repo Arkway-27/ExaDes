@@ -13,20 +13,20 @@ class Room:
         for wall in self.walls:
             self.openings[wall.index] = wall.openings
 
-    def createWall(self, index, facing, coordinates):
-        wall = Wall(self, index, facing, coordinates)
+    def createWall(self, index, facing, length, coordinates):
+        wall = Wall(self, index, facing, length, coordinates)
         self.walls.append(wall)
-        self.updateOpenings()
         return wall
 
-    def place_opening(self, name, coordinates, wall):
+    def placeOpening(self, name, coordinates, wall):
         opening = Opening(self, name, coordinates)
         wall.openings.append(opening)
+        self.updateOpenings()
 
     # def addLinkedRoom(self, room, opening):
     #     self.linked_rooms.append(room)
 
-    def place_electrical_equipment(
+    def placeElectrical_equipment(
         self,
         name,
         coordinates,
@@ -90,11 +90,12 @@ class Furniture(Object):
 
 
 class Wall:
-    def __init__(self, room, index, facing, coordinates):
+    def __init__(self, room, index, facing, length, coordinates):
         self.index = index
         self.room = room
         self.facing = facing
         self.openings = []
+        self.length = length
         self.coordinates = coordinates
 
     def __str__(self):
