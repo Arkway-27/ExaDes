@@ -53,19 +53,20 @@ def setWallCoordinates(room, wall):
         wall.coordinates[0] = -room.dimensions[1] / 2
         wall.coordinates[1] = 0
 
-def setOpeningCoordinates(room, wall, opening):
+
+def setOpeningCoordinates( wall, opening):
     if wall.facing == "north":
-        opening.coordinates[0] = wall.coordinates[0] + wall.length / 2
-        opening.coordinates[1] = wall.coordinates[1]
-    elif wall.facing == "east":
         opening.coordinates[0] = wall.coordinates[0]
         opening.coordinates[1] = wall.coordinates[1] + wall.length / 2
-    elif wall.facing == "south":
-        opening.coordinates[0] = wall.coordinates[0] - wall.length / 2
+    elif wall.facing == "east":
+        opening.coordinates[0] = wall.coordinates[0] + wall.length / 2
         opening.coordinates[1] = wall.coordinates[1]
-    elif wall.facing == "west":
+    elif wall.facing == "south":
         opening.coordinates[0] = wall.coordinates[0]
         opening.coordinates[1] = wall.coordinates[1] - wall.length / 2
+    elif wall.facing == "west":
+        opening.coordinates[0] = wall.coordinates[0] - wall.length / 2
+        opening.coordinates[1] = wall.coordinates[1]
 
 
 print(room)
