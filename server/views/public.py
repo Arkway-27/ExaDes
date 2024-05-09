@@ -1,7 +1,8 @@
-from flask import Flask, Blueprint
+from flask import Flask, Blueprint, make_response, send_file
 
 public = Blueprint('public', __name__)
 
 @public.route('/')
 def index():
-    return 'Hello, World!'
+    fileDir = "static/door.glb"
+    return make_response(send_file(fileDir, as_attachment=True))
