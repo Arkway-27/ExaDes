@@ -56,14 +56,14 @@ const updateWallLocation=(index,coordinates,values)=>{
         <label>
             Width(m):
             <input type="number" value={roomDimensions.width}
-            onChange={(e)=>setRoomDimensions=({
+            onChange={(e)=>setRoomDimensions({
                 ...roomDimensions,width:e.target.value
             })}/>
         </label>
         <label>
             Height(m):
             <input type="number" value={roomDimensions.height}
-            onChange={(e)=>setRoomDimensions=({
+            onChange={(e)=>setRoomDimensions({
                 ...roomDimensions,height:e.target.value
             })}/>
         </label>
