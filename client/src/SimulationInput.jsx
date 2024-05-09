@@ -24,7 +24,7 @@ const SimulationInput = () => {
     };
 
     try {
-      const response = await axios.get("http://192.168.27.150:2000/");
+      const response = await axios.get("http://192.168.27.150:2000/",{ responseType: 'arraybuffer' });
       setRenderData(response.data);
       console.log(response);
     } catch (error) {
