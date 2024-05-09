@@ -1,104 +1,106 @@
-import React,{useState} from "react";
+import React, { useState } from "react";
 import axios from 'axios';
 import BlenderScene from './BlenderScene';
 
+const SimulationInput = () => {
+  const [roomDimensions, setRoomDimensions] = useState({ length: '', width: '', height: '' });
+  const [wallLocations, setWallLocations] = useState([]);
+  const [applianceTypes, setApplianceTypes] = useState([]);
+  const [placementRules, setPlacementRules] = useState('');
+  const [renderData, setRenderData] = useState(null);
 
-const SimulationInput= () => {
-     const [roomDimensions,setRoomDimensions]=useState({length:'',width:'',height:''});
-     const [wallLocations,setWallLoctions]=useState('');
-     const [appliancesType,setAppliancesType]=useState([]);
-     const [placementRules,setPlacementRules]=useState('');
-     const [renderData,setRenderData]=useState(null);
-
-
-const handleSubmit=async(e)=>{
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    
 
-    const inputData={
-        roomDimensions,
-        wallLocations,
-        appliancesTypes,
-        placementRules,
+    const inputData = {
+      roomDimensions,
+      wallLocations,
+      applianceTypes,
+      placementRules,
     };
 
-    try{
-        const response=await axios.post('',inputData);
-
-        setRenderData(response.data);
-    }catch(error){
-        console.error('Error:',error);
+    try {
+      const response = await axios.post('http://192.168.27.150:5000/', inputData);
+      setRenderData(response.data);
+      console.log(response)
+    } catch (error) {
+      console.error('Error:', error);
     }
-};
+  };
 
-const addWallLocation=()=>{
-    setWallLoctions([...wallLocationsf,{x:'',y:'',z:''}]);
-};
-const updateWallLocation=(index,coordinates,values)=>{
-    const updateWallLocation=[...wallLocations];
-    updateWallLocations[index][coordinate]=value;
-    setWallLoctions(updateWallLocations);
-}
+  const addWallLocation = () => {
+    setWallLocations([...wallLocations, { x: '', y: '', z: '' }]);
+  };
 
-     
+  const updateWallLocation = (index, coordinate, value) => {
+    const updatedWallLocations = [...wallLocations];
+    updatedWallLocations[index][coordinate] = value;
+    setWallLocations(updatedWallLocations);
+  };
+
   return (
     <div>
       <form onSubmit={handleSubmit}>
         <h2>Room Dimensions</h2>
         <label>
-            Length(m):
-        
-        <input
-        type="number"
-        value={roomDimensions.length}
-        onChange={(e)=>setRoomDimensions({...roomDimensions})}/>
+          Length(m):
+          <input
+            type="number"
+            value={roomDimensions.length}
+            onChange={(e) => setRoomDimensions({ ...roomDimensions, length: e.target.value })}
+          />
         </label>
         <label>
-            Width(m):
-            <input type="number" value={roomDimensions.width}
-            onChange={(e)=>setRoomDimensions({
-                ...roomDimensions,width:e.target.value
-            })}/>
+          Width(m):
+          <input
+            type="number"
+            value={roomDimensions.width}
+            onChange={(e) => setRoomDimensions({ ...roomDimensions, width: e.target.value })}
+          />
         </label>
         <label>
-            Height(m):
-            <input type="number" value={roomDimensions.height}
-            onChange={(e)=>setRoomDimensions({
-                ...roomDimensions,height:e.target.value
-            })}/>
+          Height(m):
+          <input
+            type="number"
+            value={roomDimensions.height}
+            onChange={(e) => setRoomDimensions({ ...roomDimensions, height: e.target.value })}
+          />
         </label>
+
         <h2>Wall Locations</h2>
         <button type="button" onClick={addWallLocation}>
-            Add Wall Location
+          Add Wall Location
         </button>
-        {wallLocations.map((wallLocations,index)=>(
-         <div key={index}>
+        {wallLocations.map((wallLocation, index) => (
+          <div key={index}>
             <label>
-                Wall [{index}] X:
-                <input 
+              Wall [{index}] X:
+              <input
                 type="number"
                 value={wallLocation.x}
-                onChange={(e)=>updateWallLocation(index,'x',e.target.value)}/>
+                onChange={(e) => updateWallLocation(index, 'x', e.target.value)}
+              />
             </label>
             <label>
-                Wall[{index}] Y:
-                <input
+              Wall [{index}] Y:
+              <input
                 type="number"
-                value={wallLocations.y}
-                onChange={(e)=>updateWallLocation(index,'y',e.target.value)}
-                />
+                value={wallLocation.y}
+                onChange={(e) => updateWallLocation(index, 'y', e.target.value)}
+              />
             </label>
             <label>
-                Wall [{index}] Z:
-                <input
+              Wall [{index}] Z:
+              <input
                 type="number"
-                value={wallLocations.z}
-                onChange={(e)=>updateWallLocation(index,'z',e.target.value)}
-                />
-          </label>
-            </div>
+                value={wallLocation.z}
+                onChange={(e) => updateWallLocation(index, 'z', e.target.value)}
+              />
+            </label>
+          </div>
         ))}
-         <h2>Appliance Types</h2>
+
+        <h2>Appliance Types</h2>
         <div>
           <label>
             <input
@@ -128,7 +130,6 @@ const updateWallLocation=(index,coordinates,values)=>{
             />
             Fan
           </label>
-         
         </div>
 
         <h2>Placement Rules</h2>
@@ -141,9 +142,9 @@ const updateWallLocation=(index,coordinates,values)=>{
         <button type="submit">Run Simulation</button>
       </form>
 
-   
       {renderData && <BlenderScene renderData={renderData} />}
     </div>
   );
 };
-export default SimulationInput;
+
+export default SimulationInput
