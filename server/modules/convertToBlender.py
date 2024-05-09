@@ -3,42 +3,29 @@ from os import listdir
 from os.path import isfile, join
 
 def renderRoom(room, jobid):
-    model_path = os.path.join(os.getcwd(), "server/jobs/")
-    models = [f for f in listdir(model_path) if (isfile(join(model_path, f)) and f != f"{jobid}-output.gltf")]
+    model_path = os.path.join(os.getcwd(), "server/static/")
+    models = [f for f in listdir(model_path) if (isfile(join(model_path, f)) and f != f"output.glb")]
 
     for model in models:
         bpy.ops.import_scene.gltf(filepath=f"{model_path}/{model}")
 
-    cube = bpy.data.objects['Cube']
-    cube.select_set(True)
-    bpy.ops.object.delete()
-
+    # cube = bpy.data.objects['Cube']
     # bpy.ops.object.mode_set(mode='OBJECT')
     # bpy.ops.object.select_all(action='DESELECT')
+    # cube.select_set(True)
+    # bpy.ops.object.delete()
+
 
     verts = []
     for wall in room.walls:
-        roomLength = wall.length / 2
+        roomLength = int(wall.length) / 2
         verts.append((roomLength, -roomLength, 0.0))
 
     door = bpy.data.objects['Door']
     window = bpy.data.objects['Window']
     for wall in room.walls:
-        roomLength = wall.length / 2
-        roomHeight = wall.height
-        # switch wall.facing:
-        #     case "north":
-        #         a = 0
-        #         break
-        #     case "south":
-        #         a = 2
-        #         break
-        #     case "east":
-        #         a = 3
-        #         break
-        #     case "west":
-        #         a = 1
-        #         break
+        roomLength = int(wall.length) / 2
+        roomHeight = int(3)
         def switchCase(argument):
             switcher = {
                 "north": 0,
@@ -57,10 +44,10 @@ def renderRoom(room, jobid):
                 door.rotation_euler.rotate_axis('Z', math.radians(90*a))
             if opening.name == "window":
                 window.rotation_mode = 'XYZ'
-                window.location = (roomLength, 0, roomHeight / 2)
+                window.location = (roomLength, 0, int(roomHeight) / 2)
                 window.rotation_euler.rotate_axis('Z', math.radians(90*a))
 
-        verts.append((roomLength, -roomLength, roomHeight))
+        verts.append((int(roomLength), -int(roomLength), int(roomHeight)))
 
     mesh = bpy.data.meshes.new('Room_Mesh')
 
@@ -83,4 +70,6 @@ def renderRoom(room, jobid):
     scene = bpy.context.scene
     scene.collection.objects.link(obj)
 
-    bpy.ops.export_scene.gltf(filepath=f"{model_path}/output.gltf")
+    bpy.ops.export_scene.gltf(filepath=f"server/jobs/{jobid}-output.gltf")
+
+

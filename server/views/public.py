@@ -16,11 +16,13 @@ def index():
 @public.route("/createJob", methods=["POST"])
 def createJob():
     data = request.json
-    print(data)
+    # print(data)
     jobid = uuid.uuid4()
-    room = Room("Room", "A room", (data.width, data.length, 3))
-    for wall in data.walls:
-        room.createWall(wall["index"], wall["facing"], (0, 0, 0))
+    room = Room("Room", "A room", (data['roomDimensions']['width'], data['roomDimensions']['length'], 3))
+    print(data)
+    for wall in data['walls']:
+        print(wall)
+        room.createWall(wall["index"], wall["direction"], wall['length'], (0, 0, 0))
     renderRoom(room, jobid)
     return {"jobid": jobid}
 
