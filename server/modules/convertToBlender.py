@@ -26,19 +26,29 @@ def renderRoom(room)
     for wall in room.walls:
         roomLength = wall.length / 2
         roomHeight = wall.height
-        switch wall.facing:
-            case "north":
-                a = 0
-                break
-            case "south":
-                a = 2
-                break
-            case "east":
-                a = 3
-                break
-            case "west":
-                a = 1
-                break
+        # switch wall.facing:
+        #     case "north":
+        #         a = 0
+        #         break
+        #     case "south":
+        #         a = 2
+        #         break
+        #     case "east":
+        #         a = 3
+        #         break
+        #     case "west":
+        #         a = 1
+        #         break
+        def switchCase(argument):
+            switcher = {
+                "north": 0,
+                "south": 2,
+                "east": 3,
+                "west": 1
+            }
+            return switcher.get(argument, "Invalid direction")
+
+        a = switchCase(wall.facing)
 
         for opening in wall.openings:
             if opening.name == "door":
