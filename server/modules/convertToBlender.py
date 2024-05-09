@@ -2,9 +2,9 @@ import bpy, os, math
 from os import listdir
 from os.path import isfile, join
 
-def renderRoom(room)
-    model_path = os.path.join(os.getcwd(), "server/static")
-    models = [f for f in listdir(model_path) if (isfile(join(model_path, f)) and f != 'output.gltf')]
+def renderRoom(room, jobid):
+    model_path = os.path.join(os.getcwd(), "server/jobs/")
+    models = [f for f in listdir(model_path) if (isfile(join(model_path, f)) and f != f"{jobid}-output.gltf")]
 
     for model in models:
         bpy.ops.import_scene.gltf(filepath=f"{model_path}/{model}")
