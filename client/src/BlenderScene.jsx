@@ -4,7 +4,8 @@ import { Environment, OrbitControls, useGLTF } from '@react-three/drei';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
 const BlenderScene = ({ renderData }) => {
-  const gltf = useLoader(GLTFLoader,"http://192.168.27.150:2000/");
+  const gltf = useLoader(GLTFLoader,"http://172.16.3.71:2000/");
+  //const gltf = useLoader(GLTFLoader,`http://172.16.5.133:5000/getModel?jobid=${renderData}`);
   const meshRef = useRef();
 
   const model = useMemo(() => {
