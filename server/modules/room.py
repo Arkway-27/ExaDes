@@ -13,8 +13,8 @@ class Room:
         for wall in self.walls:
             self.openings[wall.index] = wall.openings
 
-    def createWall(self, index, facing, coordinates):
-        wall = Wall(self, index, facing, coordinates)
+    def createWall(self, index, facing, length, coordinates):
+        wall = Wall(self, index, facing, length, coordinates)
         self.walls.append(wall)
         return wall
 

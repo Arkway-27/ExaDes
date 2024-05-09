@@ -1,6 +1,9 @@
 from room import Room
 
-dimensions = (5, 4, 3)
+width = 4
+length = 5
+height = 3
+
 walls = [
     {
         "index": 0,
@@ -23,15 +26,46 @@ walls = [
         "length": "4",
     },
 ]
-room = Room("Bedroom", "A cozy bedroom", dimensions)
+
+directions = {
+    "north": "y",
+    "east": "x",
+    "south": "-y",
+    "west": "-x",
+}
+
+room = Room("Bedroom", "A cozy bedroom", (width, length, height))
 for wall in walls:
     room.createWall(wall["index"], wall["facing"], wall["coordinates"])
 
 
-for wall in room.walls:
+def setWallCoordinates(room, wall):
     if wall.facing == "north":
-        room.placeOpening("door", [], wall)
+        wall.coordinates[0] = 0
+        wall.coordinates[1] = room.dimensions[0] / 2
+    elif wall.facing == "east":
+        wall.coordinates[0] = room.dimensions[1] / 2
+        wall.coordinates[1] = 0
+    elif wall.facing == "south":
+        wall.coordinates[0] = 0
+        wall.coordinates[1] = -room.dimensions[0] / 2
     elif wall.facing == "west":
-        room.placeOpening("window", [0, 2, 3], wall)
+        wall.coordinates[0] = -room.dimensions[1] / 2
+        wall.coordinates[1] = 0
+
+def setOpeningCoordinates(room, wall, opening):
+    if wall.facing == "north":
+        opening.coordinates[0] = wall.coordinates[0] + wall.length / 2
+        opening.coordinates[1] = wall.coordinates[1]
+    elif wall.facing == "east":
+        opening.coordinates[0] = wall.coordinates[0]
+        opening.coordinates[1] = wall.coordinates[1] + wall.length / 2
+    elif wall.facing == "south":
+        opening.coordinates[0] = wall.coordinates[0] - wall.length / 2
+        opening.coordinates[1] = wall.coordinates[1]
+    elif wall.facing == "west":
+        opening.coordinates[0] = wall.coordinates[0]
+        opening.coordinates[1] = wall.coordinates[1] - wall.length / 2
+
 
 print(room)
