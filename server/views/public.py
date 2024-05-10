@@ -1,5 +1,6 @@
 from flask import Flask, Blueprint, make_response, send_file, request
-from server.modules.convertToBlender import renderRoom
+
+# from server.modules.convertToBlender import renderRoom
 import uuid
 
 from server.modules.room import Room
@@ -9,7 +10,7 @@ public = Blueprint("public", __name__)
 
 @public.route("/")
 def index():
-    fileDir = "static/door.glb"
+    fileDir = "static/room.glb"
     return make_response(send_file(fileDir, as_attachment=True))
 
 
@@ -32,4 +33,3 @@ def getModel():
     jobid = request.args.get("jobid")
     fileDir = f"jobs/{jobid}-output.fbx"
     return make_response(send_file(fileDir, as_attachment=True))
-
