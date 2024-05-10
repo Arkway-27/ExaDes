@@ -19,9 +19,9 @@ def createJob():
     # print(data)
     jobid = uuid.uuid4()
     room = Room("Room", "A room", (data['roomDimensions']['width'], data['roomDimensions']['length'], 3))
-    print(data)
+    # print(data)
     for wall in data['walls']:
-        print(wall)
+        # print(wall)
         room.createWall(wall["index"], wall["direction"], wall['length'], (0, 0, 0))
     renderRoom(room, jobid)
     return {"jobid": jobid}
@@ -30,6 +30,6 @@ def createJob():
 @public.route("/getModel", methods=["GET"])
 def getModel():
     jobid = request.args.get("jobid")
-    fileDir = f"jobs/{jobid}-output.gltf"
+    fileDir = f"jobs/{jobid}-output.fbx"
     return make_response(send_file(fileDir, as_attachment=True))
 

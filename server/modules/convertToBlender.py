@@ -9,11 +9,11 @@ def renderRoom(room, jobid):
     for model in models:
         bpy.ops.import_scene.gltf(filepath=f"{model_path}/{model}")
 
-    # cube = bpy.data.objects['Cube']
-    # bpy.ops.object.mode_set(mode='OBJECT')
-    # bpy.ops.object.select_all(action='DESELECT')
-    # cube.select_set(True)
-    # bpy.ops.object.delete()
+    cube = bpy.data.objects['Cube']
+    bpy.data.objects.remove(cube)
+
+    for l in bpy.data.objects:
+        print(l)
 
 
     verts = []
@@ -66,10 +66,8 @@ def renderRoom(room, jobid):
     # Create an object from the mesh
     obj = bpy.data.objects.new('Room', mesh)
 
-    # Link the object to the scene
     scene = bpy.context.scene
     scene.collection.objects.link(obj)
-
-    bpy.ops.export_scene.gltf(filepath=f"server/jobs/{jobid}-output.gltf")
+    bpy.ops.export_scene.fbx(filepath=f"server/jobs/{jobid}-output.fbx", use_visible=True)
 
 
